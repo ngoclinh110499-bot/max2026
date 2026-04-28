@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 畢業餐會 - 中華大學</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
+        
+        body { 
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F8F7F4;
+            color: #1C1917;
+        }
+        
+        .font-serif-tc { font-family: 'Noto Serif TC', serif; }
+        
+        .card-shadow {
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15), 0 18px 36px -18px rgba(0, 0, 0, 0.2);
+        }
+
+        .line-decor {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #D4AF37, transparent);
+            width: 80%;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('dashboard');
+            const [selectedStudent, setSelectedStudent] = useState(null);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [publicUrl, setPublicUrl] = useState('');
+
+            // 完整名單
+            const [students] = useState([
+                { id: "B11118001", name: "簡國軒", major: "餐旅管理學系", quote: "祝畢業快樂，前程似錦！" },
+                { id: "B11118003", name: "劉曜樟", major: "餐旅管理學系", quote: "願你在未來的日子裡，眼中有星辰，心中有大海。" },
+                { id: "B11118005", name: "楊以琳", major: "餐旅管理學系", quote: "畢業不是終點，而是另一個輝煌的起點。" },
+                { id: "B11118008", name: "陳珈妤", major: "餐旅管理學系", quote: "展翅高飛，追逐夢想，勇往直前！" },
+                { id: "B11118009", name: "蕭富池", major: "餐旅管理學系", quote: "願你歷盡千帆，歸來仍是少年。" },
+                { id: "B11118011", name: "黃沛婕", major: "餐旅管理學系", quote: "未來的路上，願 you 勇敢做自己，閃閃發光。" },
+                { id: "B11118013", name: "沈俊憲", major: "餐旅管理學系", quote: "祝你在新的旅程中，收穫滿滿的驚喜。" },
+                { id: "B11118014", name: "呂芸萱", major: "餐旅管理學系", quote: "不負韶華，未來可期，畢業快樂！" },
+                { id: "B11118015", name: "徐聿呈", major: "餐旅管理學系", quote: "願你此去繁花似錦，再相逢依舊如故。" },
+                { id: "B11118016", name: "陳衍廷", major: "餐旅管理學系", quote: "勇敢去闖，你的未來有無窮可能。" },
+                { id: "B11118017", name: "鄭安凱", major: "餐旅管理學系", quote: "祝你生活如詩，未來如畫。" },
+                { id: "B11118018", name: "王凱勳", major: "餐旅管理學系", quote: "保持熱愛，奔赴山海。" },
+                { id: "B11118019", name: "黃子真", major: "餐旅管理學系", quote: "夢想在前方，路在腳下。" },
+                { id: "B11118022", name: "陳靜雯", major: "餐旅管理學系", quote: "畢業快樂，萬事勝意！" },
+                { id: "B11118024", name: "黃靖哲", major: "餐旅管理學系", quote: "一路順風，大放異彩。" },
+                { id: "B11118025", name: "王詩妮", major: "餐旅管理學系", quote: "願你一生努力，一生被愛。" },
+                { id: "B11118026", name: "鄭茹安", major: "餐旅管理學系", quote: "未來可期，頂峰相見！" },
+                { id: "B11118027", name: "陳柏瑋", major: "餐旅管理學系", quote: "拼搏到無能為力，努力到感動自己。" },
+                { id: "B11118037", name: "潘雯蕙", major: "餐旅管理學系", quote: "時光不負有心人，願你未來如你所願。" },
+                { id: "H11118011", name: "黃阡喻", major: "餐旅管理學系 (進修部)", quote: "人生精彩，畢業萬歲！" },
+                { id: "H11172032", name: "曾威翔", major: "餐旅管理學系 (進修部)", quote: "願你前程無量，大展宏圖。" },
+                { id: "B11172001", name: "王梓傑", major: "觀光學院會展專業", quote: "夢想在前方，路在腳下。" }
+            ]);
+
+            useEffect(() => {
+                // 1. Cố định URL để mã QR luôn chính xác
+                // Nếu dùng GitHub, để mặc định. Nếu dùng Google Sites, hãy thay link thật vào đây.
+                const currentBaseUrl = window.location.origin + window.location.pathname;
+                setPublicUrl(currentBaseUrl);
+                
+                // 2. Logic xử lý khi quét mã QR (có tham số ?id=...)
+                const params = new URLSearchParams(window.location.search);
+                const sid = params.get('id');
+                
+                if (sid) {
+                    const found = students.find(s => s.id === sid);
+                    if (found) {
+                        setSelectedStudent(found);
+                        setCurrentPage('profile'); // Chuyển thẳng sang trang cá nhân
+                    }
+                }
+            }, [students]);
+
+            const getQRUrl = (sid) => {
+                // Đảm bảo mã QR chứa ID của sinh viên
+                const finalLink = `${publicUrl}?id=${sid}`;
+                return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(finalLink)}&margin=10`;
+            };
+
+            const ProfileCard = ({ student }) => (
+                <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
+                    <div className="max-w-[420px] w-full bg-white card-shadow rounded-sm relative overflow-hidden animate-slide-up">
+                        <div className="absolute inset-4 border border-stone-200 pointer-events-none"></div>
+                        <div className="absolute inset-6 border border-amber-100 pointer-events-none"></div>
+
+                        <div className="p-14 flex flex-col items-center text-center relative z-10">
+                            <div className="mb-10">
+                                <p className="text-[10px] font-bold tracking-[0.4em] text-stone-400 uppercase">Chung Hua University</p>
+                                <div className="mt-3 w-10 h-[1px] bg-amber-500 mx-auto"></div>
+                            </div>
+
+                            <div className="mb-12">
+                                <svg className="w-16 h-16 text-amber-500/20 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                                </svg>
+                            </div>
+
+                            <h2 className="text-4xl font-serif-tc font-black text-stone-800 mb-6 tracking-tight">
+                                {student.name}
+                            </h2>
+                            
+                            <div className="space-y-2 mb-12">
+                                <p className="text-amber-700 font-bold text-sm tracking-widest uppercase">{student.major}</p>
+                                <p className="text-stone-300 text-[10px] font-medium tracking-[0.2em]">學號：{student.id}</p>
+                            </div>
+
+                            <div className="line-decor mx-auto mb-12 opacity-40"></div>
+
+                            <div className="relative px-6">
+                                <p className="text-2xl font-serif-tc leading-relaxed text-stone-700 font-bold">
+                                    「{student.quote}」
+                                </p>
+                            </div>
+
+                            <div className="mt-24 pt-8 border-t border-stone-50 w-full opacity-40">
+                                <p className="text-[10px] font-black tracking-[0.5em] text-stone-500 uppercase">Class of 2026</p>
+                                <p className="text-[8px] text-stone-400 mt-2 uppercase tracking-widest">Graduation Dinner Ceremony</p>
+                            </div>
+                        </div>
+
+                        {/* Chỉ hiện nút quay lại nếu không phải đang xem qua QR */}
+                        <button 
+                            onClick={() => {
+                                window.history.pushState({}, '', window.location.pathname);
+                                setCurrentPage('dashboard');
+                            }} 
+                            className="absolute top-8 left-8 p-2 text-stone-300 hover:text-amber-600 transition-colors"
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                    </div>
+                </div>
+            );
+
+            const Dashboard = () => (
+                <div className="min-h-screen bg-[#FDFCFB]">
+                    <header className="bg-stone-900 py-20 px-8 text-center relative overflow-hidden">
+                        <div className="max-w-7xl mx-auto relative z-10">
+                            <h1 className="text-5xl font-serif-tc font-black text-white tracking-tighter mb-4 uppercase italic tracking-widest">2026 畢業餐會</h1>
+                            <p className="text-amber-500 font-medium tracking-[0.4em] uppercase text-xs">中華大學餐旅管理學系 • 智慧賀卡系統</p>
+                            
+                            <div className="mt-10 max-w-md mx-auto relative">
+                                <input 
+                                    type="text" 
+                                    placeholder="搜尋姓名或學號..." 
+                                    className="w-full px-8 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/40 outline-none focus:bg-white focus:ring-2 focus:ring-amber-500 transition-all font-bold text-sm"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto px-8 py-20">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                            {students.filter(s => 
+                                s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                s.id.toLowerCase().includes(searchQuery.toLowerCase())
+                            ).map(s => (
+                                <div key={s.id} className="bg-white p-10 border border-stone-100 hover:border-amber-200 transition-all duration-700 group shadow-sm hover:shadow-xl rounded-sm">
+                                    <div className="flex justify-between items-start mb-8">
+                                        <div className="text-[10px] font-bold text-stone-300">ID: {s.id}</div>
+                                        <div className="p-1 border border-stone-50 bg-white group-hover:scale-110 transition-transform">
+                                            <img src={getQRUrl(s.id)} className="w-24 h-24" alt="QR" />
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-serif-tc font-black text-stone-800 mb-2">{s.name}</h3>
+                                    <p className="text-amber-600 text-[10px] font-black uppercase tracking-widest mb-10 border-b border-stone-50 pb-4">{s.major}</p>
+
+                                    <div className="flex gap-3">
+                                        <button 
+                                            onClick={() => { setSelectedStudent(s); setCurrentPage('profile'); }}
+                                            className="flex-1 bg-stone-900 text-white py-3.5 text-[10px] font-black tracking-[0.3em] hover:bg-amber-600 transition-all uppercase"
+                                        >
+                                            進入賀卡
+                                        </button>
+                                        <a 
+                                            href={getQRUrl(s.id)}
+                                            download={`QR_${s.name}.png`}
+                                            target="_blank"
+                                            className="p-3.5 bg-stone-50 text-stone-400 hover:text-amber-700 transition-all"
+                                        >
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </main>
+
+                    <footer className="py-20 text-center border-t border-stone-50">
+                        <p className="text-[9px] font-bold tracking-[0.6em] text-stone-300 uppercase">CHU Hospitality Management • Graduates 2026</p>
+                    </footer>
+                </div>
+            );
+
+            return currentPage === 'dashboard' ? <Dashboard /> : <ProfileCard student={selectedStudent} />;
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
