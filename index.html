@@ -66,7 +66,6 @@
             const [selectedGroup, setSelectedGroup] = useState(null);
             const [publicUrl, setPublicUrl] = useState('');
 
-            // DỮ LIỆU ĐÃ CHIA 3 NHÓM THEO YÊU CẦU CỦA CẬU
             const groups = [
                 { 
                     id: 1, 
@@ -101,13 +100,19 @@
                 },
                 { 
                     id: 3, 
-                    name: '旅遊與休閒管理組', 
-                    sub: '旅遊乙班 (8人)', 
+                    name: '旅遊組 & 碩士班', 
+                    sub: '旅遊乙班 & 碩士班 (16人)', 
                     students: [
+                        // 旅遊與休閒管理組(乙班) 8人
                         { id: "B11172023", name: "邱于庭" }, { id: "B11172025", name: "戴君竹" },
                         { id: "B11172026", name: "黃子瑜" }, { id: "B11172028", name: "曾柔雅" },
                         { id: "B11172029", name: "游雅竹" }, { id: "B11172030", name: "廖振傑" },
-                        { id: "B11172031", name: "謝長峻" }, { id: "B11172032", name: "高郁涵" }
+                        { id: "B11172031", name: "謝長峻" }, { id: "B11172032", name: "高郁涵" },
+                        // 碩士班 8人
+                        { id: "M11118001", name: "碩士班畢業生 1" }, { id: "M11118002", name: "碩士班畢業生 2" },
+                        { id: "M11118003", name: "碩士班畢業生 3" }, { id: "M11118004", name: "碩士班畢業生 4" },
+                        { id: "M11118005", name: "碩士班畢業生 5" }, { id: "M11118006", name: "碩士班畢業生 6" },
+                        { id: "M11118007", name: "碩士班畢業生 7" }, { id: "M11118008", name: "碩士班畢業生 8" }
                     ]
                 }
             ];
@@ -133,7 +138,7 @@
                 <div className="min-h-screen py-20 px-6 flex flex-col items-center">
                     <div className="text-center mb-20 animate-fade">
                         <p className="text-amber-600 font-bold tracking-[0.6em] text-[10px] mb-4 uppercase">Chung Hua University</p>
-                        <h1 className="text-5xl font-serif-tc font-black text-stone-800 mb-4 tracking-tighter">畢業生智能名單系統</h1>
+                        <h1 className="text-5xl font-serif-tc font-black text-stone-800 mb-4 tracking-tighter uppercase italic">2026 畢業餐會</h1>
                         <div className="line-accent w-24 mx-auto mb-8"></div>
                         <p className="text-stone-400 font-medium tracking-widest text-xs">請掃描以下 QR Code 獲取各組名單</p>
                     </div>
@@ -154,7 +159,7 @@
                                     onClick={() => { setSelectedGroup(group); setView('list'); }}
                                     className="w-full bg-stone-900 text-white py-4 text-[10px] font-black tracking-[0.4em] hover:bg-amber-600 transition-all uppercase"
                                 >
-                                    點擊預覽名單
+                                    點擊查看名單
                                 </button>
                             </div>
                         ))}
@@ -174,7 +179,6 @@
                     </header>
 
                     <main className="max-w-4xl mx-auto px-8 py-20">
-                        {/* LỜI CHÚC CHUNG BẰNG TIẾNG TRUNG */}
                         <div className="text-center mb-24 p-12 border border-stone-100 rounded-sm bg-stone-50 shadow-sm relative overflow-hidden">
                             <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white px-4 text-amber-500/20 text-5xl font-serif-tc italic">“</span>
                             <h3 className="text-3xl font-serif-tc font-black text-stone-800 leading-relaxed mb-6">
@@ -183,16 +187,14 @@
                             <div className="line-accent w-32 mx-auto opacity-50"></div>
                         </div>
 
-                        {/* TIÊU ĐỀ DANH SÁCH */}
                         <div className="grid grid-cols-2 border-b-2 border-stone-900 pb-6 mb-8 px-4">
-                            <div className="text-[11px] font-black tracking-[0.4em] text-stone-400 uppercase italic">學號 / Student ID</div>
-                            <div className="text-[11px] font-black tracking-[0.4em] text-stone-400 uppercase italic text-right">姓名 / Name</div>
+                            <div className="text-[11px] font-black tracking-[0.4em] text-stone-400 uppercase italic">Student ID / 學號</div>
+                            <div className="text-[11px] font-black tracking-[0.4em] text-stone-400 uppercase italic text-right">Name / 姓名</div>
                         </div>
 
-                        {/* DANH SÁCH SINH VIÊN */}
                         <div className="space-y-0 divide-y divide-stone-50">
                             {selectedGroup.students.map((student, idx) => (
-                                <div key={student.id} style={{ animationDelay: `${idx * 0.05}s` }} className="grid grid-cols-2 py-7 animate-fade opacity-0 fill-mode-forwards hover:bg-stone-50 transition-colors px-4">
+                                <div key={student.id} style={{ animationDelay: `${idx * 0.05}s` }} className="grid grid-cols-2 py-7 animate-fade opacity-0 fill-mode-forwards hover:bg-stone-50 transition-colors px-6">
                                     <div className="text-stone-400 font-mono text-sm tracking-widest flex items-center">{student.id}</div>
                                     <div className="text-2xl font-serif-tc font-black text-stone-800 flex items-center justify-end">{student.name}</div>
                                 </div>
